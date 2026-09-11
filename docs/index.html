@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hugging-Loader</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-alt: #f5f5f7;
+        --border: #d9d9df;
+        --text: #1b1b1f;
+        --text-muted: #6b6b76;
+        --accent: #2f6fed;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1b1b1f;
+          --bg-alt: #242429;
+          --border: #35353c;
+          --text: #f0f0f2;
+          --text-muted: #9a9aa5;
+          --accent: #5b8dfd;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+      h1 {
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        color: var(--text-muted);
+        margin-top: 0;
+        margin-bottom: 32px;
+      }
+      .download-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        background: var(--bg-alt);
+        margin-bottom: 32px;
+      }
+      .download-button {
+        display: inline-block;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-top: 12px;
+      }
+      .meta {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 12px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 40px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      code {
+        background: var(--bg-alt);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      footer {
+        margin-top: 48px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>hugging-Loader</h1>
+      <p class="subtitle">llama.cpp 用の GGUF モデルを Hugging Face Hub から検索・ダウンロード</p>
+
+      <div class="download-card">
+        <strong>最新版: v1.0.0（macOS / Apple Silicon）</strong>
+        <br />
+        <a
+          class="download-button"
+          href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0.dmg"
+        >
+          hugging-loader-1.0.0.dmg をダウンロード
+        </a>
+        <p class="meta">
+          未署名のビルドです。初回起動時はFinderでアプリを右クリック→「開く」を選択してください。<br />
+          過去のリリース一覧は <a href="https://github.com/7thCode/hugging-loader/releases">Releases</a> から確認できます。
+        </p>
+      </div>
+
+      <h2>主な機能</h2>
+      <ul>
+        <li>タスク・パラメータ数・量子化タイプ（Q4_K_M, Q5_K_M, Q8_0 など）で絞り込み検索</li>
+        <li>一覧を名称・サイズ・量子化タイプ・パラメータ数でソート</li>
+        <li>並列分割ダウンロード（HTTP Range）と、中断からの再開に対応</li>
+        <li>ダウンロード先フォルダ内の既存ファイルを検知し、削除も可能</li>
+        <li>保存先フォルダは設定から変更可能</li>
+      </ul>
+
+      <h2>ソースコード</h2>
+      <p>
+        <a href="https://github.com/7thCode/hugging-loader">github.com/7thCode/hugging-loader</a>
+      </p>
+
+      <footer>Electron + Svelte 5 で構築。</footer>
+    </main>
+  </body>
+</html>
