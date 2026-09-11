@@ -14,6 +14,10 @@ asarUnpack:
   - resources/**
 win:
   executableName: hugging-loader
+  target:
+    - target: nsis
+      arch:
+        - x64
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
