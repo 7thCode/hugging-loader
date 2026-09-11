@@ -1,0 +1,58 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5B94D"/>
+      <stop offset="100%" stop-color="#D9711A"/>
+    </linearGradient>
+    <linearGradient id="badge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2E6E62"/>
+      <stop offset="100%" stop-color="#1E4A42"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background squircle -->
+  <rect x="0" y="0" width="1024" height="1024" rx="224" fill="url(#bg)"/>
+
+  <!-- llama head + neck -->
+  <g fill="#FFFBF3">
+    <!-- neck -->
+    <path d="M 400 720
+             C 400 620, 392 560, 392 500
+             C 392 430, 430 380, 430 380
+             L 594 380
+             C 594 380, 632 430, 632 500
+             C 632 570, 616 640, 630 720
+             C 630 760, 590 780, 512 780
+             C 434 780, 400 760, 400 720 Z"/>
+    <!-- head -->
+    <ellipse cx="512" cy="330" rx="150" ry="145"/>
+    <!-- left ear -->
+    <path d="M 400 260
+             C 360 190, 350 130, 372 96
+             C 396 122, 430 176, 452 232
+             C 430 250, 412 258, 400 260 Z"/>
+    <!-- right ear -->
+    <path d="M 624 260
+             C 664 190, 674 130, 652 96
+             C 628 122, 594 176, 572 232
+             C 594 250, 612 258, 624 260 Z"/>
+    <!-- snout -->
+    <ellipse cx="512" cy="392" rx="82" ry="60"/>
+  </g>
+
+  <!-- eyes -->
+  <circle cx="466" cy="316" r="15" fill="#3A2A18"/>
+  <circle cx="558" cy="316" r="15" fill="#3A2A18"/>
+
+  <!-- nostrils -->
+  <circle cx="488" cy="404" r="9" fill="#D9B98A"/>
+  <circle cx="536" cy="404" r="9" fill="#D9B98A"/>
+
+  <!-- download badge -->
+  <circle cx="748" cy="748" r="150" fill="url(#badge)" stroke="#F5B94D" stroke-width="14"/>
+  <g stroke="#FFFBF3" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M 748 686 L 748 782"/>
+    <path d="M 702 742 L 748 788 L 794 742"/>
+    <path d="M 690 812 L 806 812"/>
+  </g>
+</svg>
