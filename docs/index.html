@@ -4,24 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>hugging-Loader</title>
+    <meta
+      name="description"
+      content="llama.cpp 用の GGUF モデルを Hugging Face Hub から検索・絞り込み・高速ダウンロードできるデスクトップアプリ"
+    />
     <style>
       :root {
         --bg: #ffffff;
-        --bg-alt: #f5f5f7;
-        --border: #d9d9df;
-        --text: #1b1b1f;
-        --text-muted: #6b6b76;
-        --accent: #2f6fed;
+        --bg-alt: #f7f4ef;
+        --border: #e6ddd0;
+        --text: #221a12;
+        --text-muted: #6b5f4f;
+        --amber: #f5b94d;
+        --orange: #d9711a;
+        --teal: #1e4a42;
+        --teal-light: #2e6e62;
+        --cream: #fffbf3;
+        --accent: var(--orange);
         color-scheme: light dark;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #1b1b1f;
-          --bg-alt: #242429;
-          --border: #35353c;
-          --text: #f0f0f2;
-          --text-muted: #9a9aa5;
-          --accent: #5b8dfd;
+          --bg: #17130f;
+          --bg-alt: #221b14;
+          --border: #382c20;
+          --text: #f5ede1;
+          --text-muted: #b8a891;
+          --accent: var(--amber);
         }
       }
       * {
@@ -39,20 +48,135 @@
           sans-serif;
         line-height: 1.6;
       }
-      main {
-        max-width: 720px;
+      a {
+        color: var(--accent);
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--amber) 0%, var(--orange) 100%);
+        color: var(--cream);
+      }
+      .hero-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: 0.9;
+      }
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(100deg, rgba(20, 14, 8, 0.55) 0%, rgba(20, 14, 8, 0.15) 55%, rgba(20, 14, 8, 0) 75%);
+      }
+      .hero-inner {
+        position: relative;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 48px 20px 80px;
+        padding: 96px 24px 120px;
       }
-      h1 {
-        font-size: 28px;
-        margin-bottom: 4px;
+      .hero h1 {
+        font-size: 44px;
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
       }
-      .subtitle {
+      .hero .tagline {
+        font-size: 18px;
+        margin: 0 0 32px;
+        max-width: 480px;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+      }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--teal);
+        color: var(--cream);
+        text-decoration: none;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      }
+      .hero-cta:hover {
+        background: var(--teal-light);
+      }
+      .hero-cta-sub {
+        display: block;
+        margin-top: 10px;
+        font-size: 13px;
+        opacity: 0.9;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 64px 24px 96px;
+      }
+
+      /* ---------- Section headings ---------- */
+      section + section {
+        margin-top: 72px;
+      }
+      .section-heading {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin: 0 0 8px;
+      }
+      @media (prefers-color-scheme: dark) {
+        .section-heading {
+          color: var(--amber);
+        }
+      }
+      h2 {
+        font-size: 26px;
+        margin: 0 0 32px;
+      }
+
+      /* ---------- Features ---------- */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .feature-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px;
+        background: var(--bg-alt);
+      }
+      .feature-icon {
+        font-size: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--amber), var(--orange));
+        margin-bottom: 14px;
+      }
+      .feature-card h3 {
+        font-size: 16px;
+        margin: 0 0 6px;
+      }
+      .feature-card p {
+        font-size: 14px;
         color: var(--text-muted);
-        margin-top: 0;
-        margin-bottom: 32px;
+        margin: 0;
       }
+
+      /* ---------- Downloads ---------- */
       .download-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -61,7 +185,7 @@
       }
       .download-card {
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 24px;
         background: var(--bg-alt);
         display: flex;
@@ -70,16 +194,17 @@
       .download-card strong {
         display: block;
         margin-bottom: 4px;
+        font-size: 17px;
       }
       .download-card .platform-sub {
         font-size: 13px;
         color: var(--text-muted);
-        margin-bottom: 12px;
+        margin-bottom: 16px;
       }
       .download-button {
         display: inline-block;
-        background: var(--accent);
-        color: #fff;
+        background: var(--teal);
+        color: var(--cream);
         text-decoration: none;
         padding: 12px 20px;
         border-radius: 8px;
@@ -87,17 +212,13 @@
         text-align: center;
         margin-top: auto;
       }
+      .download-button:hover {
+        background: var(--teal-light);
+      }
       .meta {
         font-size: 13px;
         color: var(--text-muted);
         margin-top: 20px;
-      }
-      h2 {
-        font-size: 18px;
-        margin-top: 40px;
-      }
-      ul {
-        padding-left: 20px;
       }
       code {
         background: var(--bg-alt);
@@ -106,78 +227,138 @@
         font-size: 0.9em;
       }
       footer {
-        margin-top: 48px;
+        margin-top: 80px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
         font-size: 13px;
         color: var(--text-muted);
       }
-      a {
-        color: var(--accent);
+
+      @media (max-width: 640px) {
+        .hero-inner {
+          padding: 64px 20px 88px;
+        }
+        .hero h1 {
+          font-size: 32px;
+        }
+        .hero-overlay {
+          background: linear-gradient(180deg, rgba(20, 14, 8, 0.35) 0%, rgba(20, 14, 8, 0.55) 100%);
+        }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>hugging-Loader</h1>
-      <p class="subtitle">llama.cpp 用の GGUF モデルを Hugging Face Hub から検索・ダウンロード</p>
-
-      <p><strong>最新版: v1.0.0</strong></p>
-      <div class="download-grid">
-        <div class="download-card">
-          <strong>macOS</strong>
-          <span class="platform-sub">Apple Silicon (arm64)</span>
-          <a
-            class="download-button"
-            href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0.dmg"
-          >
-            .dmg をダウンロード
-          </a>
-        </div>
-        <div class="download-card">
-          <strong>Windows</strong>
-          <span class="platform-sub">64bit (x64)</span>
-          <a
-            class="download-button"
-            href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0-setup.exe"
-          >
-            .exe をダウンロード
-          </a>
-        </div>
-        <div class="download-card">
-          <strong>Linux</strong>
-          <span class="platform-sub">AppImage / 64bit (x64)</span>
-          <a
-            class="download-button"
-            href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0.AppImage"
-          >
-            .AppImage をダウンロード
-          </a>
-        </div>
+    <header class="hero">
+      <img class="hero-image" src="assets/hero.webp" alt="" role="presentation" />
+      <div class="hero-overlay"></div>
+      <div class="hero-inner">
+        <h1>hugging-Loader</h1>
+        <p class="tagline">
+          llama.cpp 用の GGUF モデルを、Hugging Face Hub から検索・絞り込み・並列ダウンロード。
+        </p>
+        <a class="hero-cta" href="#downloads">
+          ダウンロード
+        </a>
+        <span class="hero-cta-sub">macOS / Windows / Linux 対応・無料</span>
       </div>
-      <p class="meta">
-        Debian/Ubuntu系をお使いの場合は
-        <a href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader_1.0.0_amd64.deb"
-          >.deb パッケージ</a
-        >
-        も利用できます。<br />
-        いずれも未署名のビルドです。macOSは初回起動時にFinderでアプリを右クリック→「開く」、Windowsは「詳細情報」→「実行」でSmartScreen警告を通過してください。<br />
-        過去のリリース一覧は <a href="https://github.com/7thCode/hugging-loader/releases">Releases</a> から確認できます。
-      </p>
+    </header>
 
-      <h2>主な機能</h2>
-      <ul>
-        <li>タスク・パラメータ数・量子化タイプ（Q4_K_M, Q5_K_M, Q8_0 など）で絞り込み検索</li>
-        <li>一覧を名称・サイズ・量子化タイプ・パラメータ数でソート</li>
-        <li>並列分割ダウンロード（HTTP Range）と、中断からの再開に対応</li>
-        <li>ダウンロード先フォルダ内の既存ファイルを検知し、削除も可能</li>
-        <li>保存先フォルダは設定から変更可能</li>
-      </ul>
+    <main>
+      <section id="features">
+        <p class="section-heading">Features</p>
+        <h2>できること</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>タスク・パラメータ数・量子化で絞り込み</h3>
+            <p>
+              text-generation などのタスク、7B/13Bなどのパラメータ数、Q4_K_M や Q8_0 といった量子化タイプでモデル一覧を絞り込めます。
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">↕️</div>
+            <h3>一覧のソート</h3>
+            <p>名称・ファイルサイズ・量子化タイプ・パラメータ数のいずれでも並べ替え可能です。</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>並列分割ダウンロード</h3>
+            <p>
+              HTTP Range で1ファイルを複数チャンクに分割し同時ダウンロード。単一接続より速く取得できます。
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⏸️</div>
+            <h3>中断からの再開</h3>
+            <p>ダウンロードをキャンセル・中断しても、続きから再開できます。最初からやり直しになりません。</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🗂️</div>
+            <h3>ダウンロード済みの管理</h3>
+            <p>
+              保存先フォルダ内の既存ファイルを自動検知して表示。不要になったファイルはアプリから直接削除できます。
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>保存先フォルダを自由に設定</h3>
+            <p>ダウンロード先フォルダは設定画面から自由に変更可能。llama.cppのmodelsフォルダなどを指定できます。</p>
+          </div>
+        </div>
+      </section>
 
-      <h2>ソースコード</h2>
-      <p>
-        <a href="https://github.com/7thCode/hugging-loader">github.com/7thCode/hugging-loader</a>
-      </p>
+      <section id="downloads">
+        <p class="section-heading">Download</p>
+        <h2>最新版: v1.0.0</h2>
+        <div class="download-grid">
+          <div class="download-card">
+            <strong>macOS</strong>
+            <span class="platform-sub">Apple Silicon (arm64)</span>
+            <a
+              class="download-button"
+              href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0.dmg"
+            >
+              .dmg をダウンロード
+            </a>
+          </div>
+          <div class="download-card">
+            <strong>Windows</strong>
+            <span class="platform-sub">64bit (x64)</span>
+            <a
+              class="download-button"
+              href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0-setup.exe"
+            >
+              .exe をダウンロード
+            </a>
+          </div>
+          <div class="download-card">
+            <strong>Linux</strong>
+            <span class="platform-sub">AppImage / 64bit (x64)</span>
+            <a
+              class="download-button"
+              href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader-1.0.0.AppImage"
+            >
+              .AppImage をダウンロード
+            </a>
+          </div>
+        </div>
+        <p class="meta">
+          Debian/Ubuntu系をお使いの場合は
+          <a href="https://github.com/7thCode/hugging-loader/releases/download/v1.0.0/hugging-loader_1.0.0_amd64.deb"
+            >.deb パッケージ</a
+          >
+          も利用できます。<br />
+          いずれも未署名のビルドです。macOSは初回起動時にFinderでアプリを右クリック→「開く」、Windowsは「詳細情報」→「実行」でSmartScreen警告を通過してください。<br />
+          過去のリリース一覧は <a href="https://github.com/7thCode/hugging-loader/releases">Releases</a> から確認できます。
+        </p>
+      </section>
 
-      <footer>Electron + Svelte 5 で構築。</footer>
+      <footer>
+        <p>
+          ソースコード: <a href="https://github.com/7thCode/hugging-loader">github.com/7thCode/hugging-loader</a><br />
+          Electron + Svelte 5 で構築。
+        </p>
+      </footer>
     </main>
   </body>
 </html>
