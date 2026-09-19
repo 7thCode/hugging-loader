@@ -60,7 +60,6 @@ jobs:
             dist/*.exe
             dist/*.AppImage
             dist/*.deb
-            dist/*.snap
           if-no-files-found: ignore
 
       # Optional: attach this run's installers to an already-existing release (identified by
