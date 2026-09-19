@@ -9,9 +9,11 @@ import type {
   DeleteFileRequest,
   DeleteFileResponse,
   DownloadProgressEvent,
+  GgufHeaderResponse,
   HuggingLoaderApi,
   ListFilesRequest,
   ListFilesResponse,
+  ReadGgufHeaderRequest,
   SearchModelsRequest,
   SearchModelsResponse,
   Settings,
@@ -37,6 +39,8 @@ const api: HuggingLoaderApi = {
   setDestinationDir: (req: SetDestinationDirRequest): Promise<Settings> =>
     ipcRenderer.invoke('settings:setDestinationDir', req),
   chooseFolder: (): Promise<ChooseFolderResponse> => ipcRenderer.invoke('dialog:chooseFolder'),
+  readGgufHeader: (req: ReadGgufHeaderRequest): Promise<GgufHeaderResponse> =>
+    ipcRenderer.invoke('gguf:readHeader', req),
   onDownloadProgress: (cb: (event: DownloadProgressEvent) => void): (() => void) => {
     const listener = (_event: Electron.IpcRendererEvent, payload: DownloadProgressEvent): void =>
       cb(payload)

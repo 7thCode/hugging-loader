@@ -3,6 +3,7 @@
   import FilterBar from './lib/components/FilterBar.svelte'
   import ResultsList from './lib/components/ResultsList.svelte'
   import SettingsPanel from './lib/components/SettingsPanel.svelte'
+  import GgufDialog from './lib/components/GgufDialog.svelte'
   import { loadSettings } from './lib/state/settings.svelte'
   import { subscribeDownloadProgress } from './lib/state/downloads.svelte'
   import { runSearch } from './lib/state/results.svelte'
@@ -22,6 +23,7 @@
 <SettingsPanel />
 <FilterBar />
 <ResultsList />
+<GgufDialog />
 
 <style>
   header {

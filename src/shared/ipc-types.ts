@@ -105,6 +105,41 @@ export interface DownloadProgressEvent {
   errorMessage?: string
 }
 
+export type GgufScalar = string | number | boolean
+
+export interface GgufMetadataEntry {
+  key: string
+  type: string // e.g. "uint32", "string", "array<string>"
+  value: GgufScalar | null // null for arrays
+  // Arrays (e.g. the tokenizer vocabulary) can hold hundreds of thousands of elements,
+  // so only their length and the first few elements are sent to the renderer.
+  array: { elementType: string; length: number; preview: GgufScalar[] } | null
+}
+
+export interface GgufTensorInfo {
+  name: string
+  dims: number[]
+  type: string // ggml tensor type name, e.g. "Q4_K"
+  offset: number // byte offset within the tensor data section
+}
+
+export interface ReadGgufHeaderRequest {
+  filename: string
+}
+
+export interface GgufHeaderResponse {
+  fileSize: number
+  version: number
+  tensorCount: number
+  metadataCount: number
+  headerSize: number // bytes from the start of the file to the end of the tensor info table
+  alignment: number
+  dataOffset: number // where the tensor data section starts (headerSize rounded up to alignment)
+  fileTypeName: string | null // llama_ftype name for `general.file_type`, e.g. "MOSTLY_Q4_K_M"
+  metadata: GgufMetadataEntry[]
+  tensors: GgufTensorInfo[]
+}
+
 export interface Settings {
   destinationDir: string
 }
@@ -200,5 +235,6 @@ export interface HuggingLoaderApi {
   getSettings: () => Promise<Settings>
   setDestinationDir: (req: SetDestinationDirRequest) => Promise<Settings>
   chooseFolder: () => Promise<ChooseFolderResponse>
+  readGgufHeader: (req: ReadGgufHeaderRequest) => Promise<GgufHeaderResponse>
   onDownloadProgress: (cb: (event: DownloadProgressEvent) => void) => () => void
 }
