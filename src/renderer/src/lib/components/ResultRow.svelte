@@ -2,6 +2,7 @@
   import type { FileEntry, RepoSummary } from '../../../../shared/ipc-types'
   import { downloadsByFilename } from '../state/downloads.svelte'
   import { markExistsOnDisk } from '../state/results.svelte'
+  import { openGgufDialog } from '../state/ggufDialog.svelte'
   import { formatBytes, formatParamCount } from '../format'
   import ProgressBar from './ProgressBar.svelte'
 
@@ -74,6 +75,7 @@
         title={file.downloadedAt ? formatDownloadedAt(file.downloadedAt) : ''}
         >ダウンロード済み</span
       >
+      <button onclick={() => openGgufDialog(file.filename)}>GGUF情報</button>
       <button class="danger" onclick={handleDelete}>削除</button>
     {:else}
       <button class="primary" disabled={starting} onclick={handleDownload}>ダウンロード</button>
