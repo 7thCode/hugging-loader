@@ -15,7 +15,10 @@ export interface RepoSummary {
 
 export interface FileEntry {
   repoId: string
-  filename: string // rfilename, e.g. "llama-2-7b-chat.Q4_K_M.gguf"
+  // rfilename: the path within the repo, which may include subfolders — e.g.
+  // "llama-2-7b-chat.Q4_K_M.gguf" or "BF16/model-00001-of-00002.gguf". The same relative
+  // path is used under the destination folder, so subfolders are preserved on disk.
+  filename: string
   sizeBytes: number
   quant: string | null // e.g. "Q4_K_M", or null if unrecognized
   existsOnDisk: boolean

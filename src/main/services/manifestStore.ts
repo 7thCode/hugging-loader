@@ -14,7 +14,9 @@ export interface ManifestEntry {
   downloadedAt: string // ISO timestamp
 }
 
-export type Manifest = Record<string, ManifestEntry> // keyed by filename
+// Keyed by rfilename, i.e. the path relative to the destination folder with '/' separators
+// ("BF16/model-00001-of-00002.gguf" for a file in a subfolder), on every platform.
+export type Manifest = Record<string, ManifestEntry>
 
 function manifestPath(destinationDir: string): string {
   return path.join(destinationDir, MANIFEST_FILENAME)

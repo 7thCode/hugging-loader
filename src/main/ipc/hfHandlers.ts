@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import { searchRepos, fetchRepoFiles } from '../services/hfApiClient'
-import { listExistingFilenames } from '../services/fsUtil'
+import { findExistingFilenames } from '../services/fsUtil'
 import { loadSettings } from '../services/settingsStore'
 import { loadManifest } from '../services/manifestStore'
 import type {
@@ -24,7 +24,10 @@ export function registerHfHandlers(): void {
       const result = await fetchRepoFiles(req.repoId)
       const settings = await loadSettings()
       const [existing, manifest] = await Promise.all([
-        listExistingFilenames(settings.destinationDir),
+        findExistingFilenames(
+          settings.destinationDir,
+          result.files.map((f) => f.filename)
+        ),
         loadManifest(settings.destinationDir)
       ])
       return {
