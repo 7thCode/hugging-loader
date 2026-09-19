@@ -3,6 +3,7 @@ import path from 'path'
 import { randomUUID } from 'crypto'
 import { HF_RESOLVE_BASE } from '../constants'
 import { recordDownload } from './manifestStore'
+import { resolveInDestination } from './fsUtil'
 import { downloadFileResumable } from './chunkedDownload'
 import type { DownloadProgressEvent, DownloadState } from '../../shared/ipc-types'
 
@@ -15,7 +16,7 @@ export interface DownloadMeta {
 
 interface ActiveDownload {
   controller: AbortController
-  filename: string
+  finalPath: string
 }
 
 const activeDownloads = new Map<string, ActiveDownload>()
@@ -28,26 +29,29 @@ export async function startDownload(
   meta: DownloadMeta,
   onProgress: ProgressCallback
 ): Promise<string> {
-  const finalPath = path.join(destinationDir, filename)
+  // `filename` is the rfilename and may include subfolders ("BF16/model-00001-of-00002.gguf");
+  // the layout is mirrored under destinationDir so split-GGUF shards land side by side.
+  const finalPath = resolveInDestination(destinationDir, filename)
   const partPath = `${finalPath}.part`
 
-  // The destination is a flat folder keyed by filename, so two repos publishing an
-  // identically-named file (rare but real — e.g. bartowski/unsloth both shipping a
-  // "Qwen3.8-27B-Q4_0.gguf") would otherwise race on the same `.part`/sidecar path
-  // and corrupt each other's data. Only one active download per filename is allowed.
+  // The destination is keyed by relative path, so two repos publishing a file at the same
+  // path (rare but real — e.g. bartowski/unsloth both shipping a "Qwen3.8-27B-Q4_0.gguf")
+  // would otherwise race on the same `.part`/sidecar path and corrupt each other's data.
+  // Only one active download per target path is allowed (compared after resolution, so
+  // "BF16/x.gguf" and "./BF16//x.gguf" count as the same file).
   //
   // The check-then-reserve below is intentionally synchronous (no `await` in between):
   // ipcMain.handle invocations run one at a time up to their first await, so two
-  // near-simultaneous fs:startDownload calls for the same filename can't both pass
+  // near-simultaneous fs:startDownload calls for the same file can't both pass
   // the check before either reserves it — the second always sees the first's entry.
   for (const active of activeDownloads.values()) {
-    if (active.filename === filename) {
+    if (active.finalPath === finalPath) {
       throw new Error(`Already downloading ${filename} (from another repo, or a duplicate request)`)
     }
   }
   const downloadId = randomUUID()
   const controller = new AbortController()
-  activeDownloads.set(downloadId, { controller, filename })
+  activeDownloads.set(downloadId, { controller, finalPath })
 
   try {
     const alreadyExists = await fs
@@ -59,7 +63,8 @@ export async function startDownload(
     }
     // A stale `.part` from a prior attempt is NOT deleted here: chunkedDownload.ts
     // inspects it (and its resume sidecar) and decides whether to resume or restart.
-    await fs.mkdir(destinationDir, { recursive: true })
+    // Creates the destination folder and any subfolder the file lives in.
+    await fs.mkdir(path.dirname(finalPath), { recursive: true })
   } catch (err) {
     activeDownloads.delete(downloadId)
     throw err

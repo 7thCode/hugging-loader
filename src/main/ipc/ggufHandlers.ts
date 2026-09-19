@@ -1,17 +1,12 @@
 import { ipcMain } from 'electron'
-import path from 'path'
 import { readGgufHeader } from '../services/ggufParser'
+import { resolveInDestination } from '../services/fsUtil'
 import { loadSettings } from '../services/settingsStore'
 import type { GgufHeaderResponse, ReadGgufHeaderRequest } from '../../shared/ipc-types'
 
-// The filename comes from the renderer, so it must never be able to point outside the
-// destination folder (e.g. "../../.ssh/id_rsa") or at a non-GGUF file.
+// On top of the destination-folder containment check, only .gguf files may be read.
 export function resolveModelPath(destinationDir: string, filename: string): string {
-  const root = path.resolve(destinationDir)
-  const resolved = path.resolve(root, filename)
-  if (!resolved.startsWith(root + path.sep)) {
-    throw new Error('保存先フォルダ外のファイルは読み込めません')
-  }
+  const resolved = resolveInDestination(destinationDir, filename)
   if (!resolved.toLowerCase().endsWith('.gguf')) {
     throw new Error('.gguf ファイルのみ読み込めます')
   }
