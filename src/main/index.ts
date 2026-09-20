@@ -4,9 +4,13 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './ipc/register'
 
+// The window currently on screen, or null when it has been closed (on macOS the app keeps
+// running with no window until `activate` creates a new one).
+let mainWindow: BrowserWindow | null = null
+
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     width: 1000,
     height: 720,
     show: false,
@@ -18,13 +22,16 @@ function createWindow(): void {
     }
   })
 
-  registerIpcHandlers(mainWindow)
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+  mainWindow = window
+  window.on('closed', () => {
+    if (mainWindow === window) mainWindow = null
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
+  window.on('ready-to-show', () => {
+    window.show()
+  })
+
+  window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
@@ -32,9 +39,9 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    window.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
 
@@ -51,6 +58,9 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+
+  // Once per process, not per window — see registerIpcHandlers.
+  registerIpcHandlers(() => mainWindow)
 
   createWindow()
 

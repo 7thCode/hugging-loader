@@ -1,11 +1,16 @@
-import { ipcMain, dialog, type BrowserWindow } from 'electron'
+import { ipcMain, dialog } from 'electron'
+import type { GetMainWindow } from './register'
 import type { ChooseFolderResponse } from '../../shared/ipc-types'
 
-export function registerDialogHandlers(mainWindow: BrowserWindow): void {
+export function registerDialogHandlers(getMainWindow: GetMainWindow): void {
   ipcMain.handle('dialog:chooseFolder', async (): Promise<ChooseFolderResponse> => {
-    const result = await dialog.showOpenDialog(mainWindow, {
+    const options: Electron.OpenDialogOptions = {
       properties: ['openDirectory', 'createDirectory']
-    })
+    }
+    const window = getMainWindow()
+    const result = window
+      ? await dialog.showOpenDialog(window, options)
+      : await dialog.showOpenDialog(options)
     if (result.canceled || result.filePaths.length === 0) {
       return { canceled: true, path: null }
     }
