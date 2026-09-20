@@ -1,6 +1,6 @@
 import type { FileEntry } from '../../../../shared/ipc-types'
 
-export type SortKey = 'name' | 'size' | 'quant' | 'paramCount'
+export type SortKey = 'name' | 'size' | 'quant' | 'paramCount' | 'downloaded'
 export type SortDir = 'asc' | 'desc'
 
 export class SortState {
@@ -36,6 +36,10 @@ export function sortFiles(files: FileEntry[], key: SortKey | null, dir: SortDir)
         if (a.paramCount === null) return 1
         if (b.paramCount === null) return -1
         return sign * (a.paramCount - b.paramCount)
+      case 'downloaded':
+        // Ascending puts downloaded files first (the useful direction for a first click).
+        // Ties compare equal, so Array.sort's stability keeps the original search order.
+        return sign * (Number(b.existsOnDisk) - Number(a.existsOnDisk))
     }
   })
 }
