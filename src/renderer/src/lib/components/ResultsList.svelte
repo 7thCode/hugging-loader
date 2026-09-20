@@ -61,7 +61,13 @@
               >パラメータ数{sortIndicator('paramCount')}</button
             ></th
           >
-          <th>操作</th>
+          <th
+            ><button
+              class="sort-head"
+              title="ダウンロード済みを上に並べます"
+              onclick={() => toggleSort('downloaded')}>操作{sortIndicator('downloaded')}</button
+            ></th
+          >
         </tr>
       </thead>
       <tbody>
@@ -122,10 +128,6 @@
   .sort-head:hover {
     color: var(--text);
     border-color: transparent;
-  }
-
-  th:has(> :not(button)) {
-    padding: 8px 10px;
   }
 
   .empty,
