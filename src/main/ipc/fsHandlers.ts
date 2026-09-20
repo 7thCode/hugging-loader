@@ -1,8 +1,9 @@
-import { ipcMain, type BrowserWindow } from 'electron'
+import { ipcMain } from 'electron'
 import * as downloadManager from '../services/downloadManager'
 import { checkExists, deleteFile } from '../services/fsUtil'
 import { loadSettings } from '../services/settingsStore'
 import { removeManifestEntry } from '../services/manifestStore'
+import type { GetMainWindow } from './register'
 import type {
   CancelDownloadRequest,
   CancelDownloadResponse,
@@ -14,7 +15,7 @@ import type {
   StartDownloadResponse
 } from '../../shared/ipc-types'
 
-export function registerFsHandlers(mainWindow: BrowserWindow): void {
+export function registerFsHandlers(getMainWindow: GetMainWindow): void {
   ipcMain.handle(
     'fs:checkExists',
     async (_event, req: CheckExistsRequest): Promise<CheckExistsResponse> => {
@@ -34,8 +35,11 @@ export function registerFsHandlers(mainWindow: BrowserWindow): void {
         settings.destinationDir,
         { quant: req.quant, paramCount: req.paramCount },
         (event) => {
-          if (!mainWindow.isDestroyed()) {
-            mainWindow.webContents.send('download:progress', event)
+          // A download keeps running after its window is closed (macOS keeps the app alive);
+          // with no window there is simply nobody to tell.
+          const window = getMainWindow()
+          if (window && !window.isDestroyed()) {
+            window.webContents.send('download:progress', event)
           }
         }
       )
