@@ -1,6 +1,6 @@
 {
   "name": "hugging-loader",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Browse and download GGUF models from Hugging Face Hub for use with llama.cpp",
   "main": "./out/main/index.js",
   "author": "",
