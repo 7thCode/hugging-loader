@@ -26,6 +26,8 @@ pub fn run() {
             commands::settings::settings_get,
             commands::settings::settings_set_destination_dir,
             commands::settings::dialog_choose_folder,
+            commands::hf::hf_search_models,
+            commands::hf::hf_list_files,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
