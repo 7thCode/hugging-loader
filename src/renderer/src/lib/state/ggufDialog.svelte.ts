@@ -26,7 +26,7 @@ export async function openGgufDialog(filename: string): Promise<void> {
     ggufDialog.header = header
   } catch (err) {
     if (seq !== requestSeq) return
-    ggufDialog.error = cleanIpcError(err)
+    ggufDialog.error = err instanceof Error ? err.message : String(err)
   } finally {
     if (seq === requestSeq) ggufDialog.loading = false
   }
@@ -38,10 +38,4 @@ export function closeGgufDialog(): void {
   ggufDialog.loading = false
   ggufDialog.error = null
   ggufDialog.header = null
-}
-
-// Electron prefixes handler errors with "Error invoking remote method '...': Error: ".
-function cleanIpcError(err: unknown): string {
-  const message = err instanceof Error ? err.message : String(err)
-  return message.replace(/^Error invoking remote method '[^']*':\s*(Error:\s*)?/, '')
 }
