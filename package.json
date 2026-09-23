@@ -19,7 +19,12 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
-    "build:mac-win": "npm run build && electron-builder --mac --win"
+    "build:mac-win": "npm run build && electron-builder --mac --win",
+    "dev:web": "vite",
+    "build:web": "vite build",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -30,6 +35,8 @@
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/tsconfig": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/cli": "^2.11.5",
     "@types/node": "^22.19.1",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
