@@ -30,6 +30,8 @@ pub fn run() {
             commands::hf::hf_list_files,
             commands::fs_cmd::fs_check_exists,
             commands::fs_cmd::fs_delete_file,
+            commands::fs_cmd::fs_start_download,
+            commands::fs_cmd::fs_cancel_download,
             commands::gguf::gguf_read_header,
         ])
         .run(tauri::generate_context!())
