@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
+import { confirm as tauriConfirm } from '@tauri-apps/plugin-dialog'
 import type {
   CancelDownloadRequest,
   CancelDownloadResponse,
@@ -67,7 +68,8 @@ const api: HuggingLoaderApi = {
       disposed = true
       unlisten?.()
     }
-  }
+  },
+  confirm: (message: string): Promise<boolean> => tauriConfirm(message)
 }
 
 export function installTauriApi(): void {

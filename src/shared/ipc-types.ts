@@ -240,4 +240,7 @@ export interface HuggingLoaderApi {
   chooseFolder: () => Promise<ChooseFolderResponse>
   readGgufHeader: (req: ReadGgufHeaderRequest) => Promise<GgufHeaderResponse>
   onDownloadProgress: (cb: (event: DownloadProgressEvent) => void) => () => void
+  // Native confirm dialog. Doesn't cross into main/Rust at all — Electron wraps the browser
+  // `confirm()` global, Tauri uses `@tauri-apps/plugin-dialog`'s `confirm()`.
+  confirm: (message: string) => Promise<boolean>
 }
