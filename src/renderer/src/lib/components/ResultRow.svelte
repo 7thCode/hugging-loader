@@ -41,7 +41,7 @@
   }
 
   async function handleDelete(): Promise<void> {
-    if (!confirm(`${file.filename} を削除しますか？`)) return
+    if (!(await window.api.confirm(`${file.filename} を削除しますか？`))) return
     const res = await window.api.deleteFile({ filename: file.filename })
     if (res.success) {
       markExistsOnDisk(file.repoId, file.filename, false)

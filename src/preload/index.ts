@@ -46,7 +46,8 @@ const api: HuggingLoaderApi = {
       cb(payload)
     ipcRenderer.on('download:progress', listener)
     return () => ipcRenderer.removeListener('download:progress', listener)
-  }
+  },
+  confirm: (message: string): Promise<boolean> => Promise.resolve(window.confirm(message))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
