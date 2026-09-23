@@ -28,6 +28,8 @@ pub fn run() {
             commands::settings::dialog_choose_folder,
             commands::hf::hf_search_models,
             commands::hf::hf_list_files,
+            commands::fs_cmd::fs_check_exists,
+            commands::fs_cmd::fs_delete_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
