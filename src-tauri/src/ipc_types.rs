@@ -121,3 +121,65 @@ pub struct DeleteFileRequest {
 pub struct DeleteFileResponse {
     pub success: bool,
 }
+
+/// Mirrors ipc-types.ts's `GgufScalar = string | number | boolean`. JS numbers are always
+/// float64 regardless of the GGUF source type (uint8 through float64 alike), so `Number(f64)`
+/// is the faithful representation here, not a compromise — see services/gguf_parser.rs's
+/// `u64_to_scalar`/`i64_to_scalar` for the 2^53 safe-integer string fallback this enables.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+#[serde(untagged)]
+pub enum GgufScalar {
+    String(String),
+    Number(f64),
+    Bool(bool),
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GgufArrayInfo {
+    pub element_type: String,
+    pub length: i64,
+    pub preview: Vec<GgufScalar>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GgufMetadataEntry {
+    pub key: String,
+    // "type" is a reserved word in Rust; renamed on the wire to match ipc-types.ts exactly.
+    #[serde(rename = "type")]
+    pub type_name: String,
+    pub value: Option<GgufScalar>,
+    pub array: Option<GgufArrayInfo>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GgufTensorInfo {
+    pub name: String,
+    pub dims: Vec<i64>,
+    #[serde(rename = "type")]
+    pub type_name: String,
+    pub offset: i64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReadGgufHeaderRequest {
+    pub filename: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GgufHeaderResponse {
+    pub file_size: i64,
+    pub version: u32,
+    pub tensor_count: i64,
+    pub metadata_count: i64,
+    pub header_size: i64,
+    pub alignment: i64,
+    pub data_offset: i64,
+    pub file_type_name: Option<String>,
+    pub metadata: Vec<GgufMetadataEntry>,
+    pub tensors: Vec<GgufTensorInfo>,
+}
