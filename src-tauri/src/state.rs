@@ -8,4 +8,6 @@ use crate::ipc_types::Settings;
 pub struct AppState {
     /// Mirrors the module-level `cached` variable in src/main/services/settingsStore.ts.
     pub settings_cache: Mutex<Option<Settings>>,
+    /// Reused across every hf_api request instead of building a new client per call.
+    pub http_client: reqwest::Client,
 }
