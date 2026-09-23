@@ -95,3 +95,29 @@ pub struct ListFilesResponse {
     pub param_count: Option<i64>,
     pub param_count_source: ParamCountSource,
 }
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CheckExistsRequest {
+    pub filename: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CheckExistsResponse {
+    pub exists: bool,
+    pub size_bytes: Option<i64>,
+    pub path: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeleteFileRequest {
+    pub filename: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeleteFileResponse {
+    pub success: bool,
+}
