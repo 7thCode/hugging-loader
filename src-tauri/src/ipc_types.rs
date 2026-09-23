@@ -122,6 +122,59 @@ pub struct DeleteFileResponse {
     pub success: bool,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StartDownloadRequest {
+    pub repo_id: String,
+    pub filename: String,
+    pub size_bytes: i64,
+    pub quant: Option<String>,
+    pub param_count: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StartDownloadResponse {
+    pub download_id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CancelDownloadRequest {
+    pub download_id: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CancelDownloadResponse {
+    pub success: bool,
+}
+
+/// Mirrors ipc-types.ts's `DownloadState` string union.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum DownloadState {
+    Downloading,
+    Completed,
+    Error,
+    Canceled,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DownloadProgressEvent {
+    pub download_id: String,
+    pub repo_id: String,
+    pub filename: String,
+    pub received_bytes: i64,
+    pub total_bytes: i64,
+    /// 0-100.
+    pub percent: i64,
+    pub state: DownloadState,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error_message: Option<String>,
+}
+
 /// Mirrors ipc-types.ts's `GgufScalar = string | number | boolean`. JS numbers are always
 /// float64 regardless of the GGUF source type (uint8 through float64 alike), so `Number(f64)`
 /// is the faithful representation here, not a compromise — see services/gguf_parser.rs's

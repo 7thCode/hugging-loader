@@ -46,8 +46,15 @@ async fn save_manifest(destination_dir: &str, manifest: &Manifest) -> Result<()>
     Ok(())
 }
 
-// record_download() (recordDownload.ts) is added in Phase 6, alongside download_manager.rs,
-// the only caller it has.
+pub async fn record_download(
+    destination_dir: &str,
+    filename: &str,
+    entry: ManifestEntry,
+) -> Result<()> {
+    let mut manifest = load_manifest(destination_dir).await;
+    manifest.insert(filename.to_string(), entry);
+    save_manifest(destination_dir, &manifest).await
+}
 
 pub async fn remove_manifest_entry(destination_dir: &str, filename: &str) -> Result<()> {
     let mut manifest = load_manifest(destination_dir).await;
@@ -100,6 +107,36 @@ mod tests {
         let reloaded = load_manifest(dest).await;
         assert!(!reloaded.contains_key("a.gguf"));
         assert!(reloaded.contains_key("b.gguf"));
+    }
+
+    #[tokio::test]
+    async fn record_download_adds_and_persists_a_new_entry() {
+        let dir = tempfile::tempdir().unwrap();
+        let dest = dir.path().to_str().unwrap();
+
+        record_download(dest, "model.gguf", sample_entry("repo/a"))
+            .await
+            .unwrap();
+
+        let reloaded = load_manifest(dest).await;
+        assert_eq!(reloaded.get("model.gguf").unwrap().repo_id, "repo/a");
+    }
+
+    #[tokio::test]
+    async fn record_download_overwrites_an_existing_entry_for_the_same_filename() {
+        let dir = tempfile::tempdir().unwrap();
+        let dest = dir.path().to_str().unwrap();
+
+        record_download(dest, "model.gguf", sample_entry("repo/a"))
+            .await
+            .unwrap();
+        record_download(dest, "model.gguf", sample_entry("repo/b"))
+            .await
+            .unwrap();
+
+        let reloaded = load_manifest(dest).await;
+        assert_eq!(reloaded.len(), 1);
+        assert_eq!(reloaded.get("model.gguf").unwrap().repo_id, "repo/b");
     }
 
     #[tokio::test]
