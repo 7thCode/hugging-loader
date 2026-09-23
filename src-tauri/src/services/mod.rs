@@ -1,4 +1,5 @@
 pub mod fs_util;
+pub mod gguf_parser;
 pub mod hf_api;
 pub mod manifest_store;
 pub mod param_count;
