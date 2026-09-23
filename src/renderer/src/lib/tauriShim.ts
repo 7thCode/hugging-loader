@@ -23,15 +23,13 @@ import type {
   StartDownloadResponse
 } from '../../../shared/ipc-types'
 
-// Tauri equivalent of src/preload/index.ts's Electron contextBridge API: same
-// HuggingLoaderApi surface, backed by Tauri's invoke()/listen() instead of ipcRenderer.
-// Electron's preload script sets `window.api` before any renderer code runs; Tauri has no
-// preload step, so main.ts installs this shim itself, only when `window.api` is missing.
+// Implements HuggingLoaderApi (installed as `window.api` by main.ts) via Tauri's
+// invoke()/listen(). Command names are the snake_case Rust #[tauri::command] fns in
+// src-tauri/src/commands/*.rs.
 //
-// Command names mirror the Rust #[tauri::command] fns in src-tauri/src/commands/*.rs
-// (snake_case, one per existing IPC channel: hf:searchModels -> hf_search_models, etc).
-// Until those commands exist, invoke() rejects with "command <name> not found" — expected
-// during the migration, not a bug in this shim.
+// (The earlier Electron build of this app had src/preload/index.ts play the same role via
+// contextBridge + ipcRenderer, and main.ts only installed this shim when that hadn't already
+// set `window.api` — both gone now that the migration to Tauri is complete.)
 const api: HuggingLoaderApi = {
   searchModels: (req: SearchModelsRequest): Promise<SearchModelsResponse> =>
     invoke('hf_search_models', { req }),
