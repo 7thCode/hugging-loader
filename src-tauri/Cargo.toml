@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.0"
+version = "1.2.2"
 description = "Browse and download GGUF models from Hugging Face Hub for use with llama.cpp"
 authors = ["7thCode"]
 license = ""
