@@ -1,4 +1,6 @@
-// Shared IPC contract types, imported by main, preload, and renderer.
+// Shared IPC contract types, imported by the renderer (src/renderer/src/lib/tauriShim.ts and
+// its callers). Mirrored field-for-field on the Rust side by src-tauri/src/ipc_types.rs,
+// which can't import this file directly across the language boundary.
 
 export type ParamCountSource = 'gguf-metadata' | 'regex-estimate' | 'unknown'
 
@@ -240,7 +242,6 @@ export interface HuggingLoaderApi {
   chooseFolder: () => Promise<ChooseFolderResponse>
   readGgufHeader: (req: ReadGgufHeaderRequest) => Promise<GgufHeaderResponse>
   onDownloadProgress: (cb: (event: DownloadProgressEvent) => void) => () => void
-  // Native confirm dialog. Doesn't cross into main/Rust at all — Electron wraps the browser
-  // `confirm()` global, Tauri uses `@tauri-apps/plugin-dialog`'s `confirm()`.
+  // Native confirm dialog, via @tauri-apps/plugin-dialog's confirm().
   confirm: (message: string) => Promise<boolean>
 }

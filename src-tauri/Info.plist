@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Merged into the bundle's Info.plist automatically (Tauri looks for a file with this
+       name next to tauri.conf.json). Only the Downloads-folder description is needed: the
+       app falls back to the OS Downloads folder as its default model destination
+       (src-tauri/src/services/settings_store.rs) when it isn't pointed elsewhere, which is a
+       programmatic (non-user-mediated) access macOS gates behind this usage description —
+       unlike the destination folder the user picks via the native folder dialog, which macOS
+       grants access to through the dialog itself, no description needed. The Electron build's
+       Camera/Microphone/Documents usage descriptions were unused boilerplate from its
+       scaffold template and are intentionally not carried over. -->
+  <key>NSDownloadsFolderUsageDescription</key>
+  <string>hugging-Loader saves downloaded GGUF models to your chosen destination folder, which defaults to your Downloads folder.</string>
+</dict>
+</plist>
