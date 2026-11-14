@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run typecheck)",
+      "Bash(npm run typecheck:node)",
+      "Bash(npm run svelte-check)",
+      "Bash(npm run lint)",
+      "Bash(npm run format)",
+      "Bash(npm run dev:web)",
+      "Bash(npm run build:web)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh run list *)",
+      "Bash(gh run view *)",
+      "Bash(gh release view *)",
+      "Bash(cargo check *)",
+      "Bash(cargo clippy *)"
+    ],
+    "deny": ["Bash(git push --force *)", "Bash(git push -f *)", "Bash(rm -rf *)"]
+  }
+}
