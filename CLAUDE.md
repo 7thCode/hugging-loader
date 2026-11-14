@@ -30,9 +30,11 @@ Rust 側のチェックは `src-tauri` 内で `cargo check` / `cargo clippy` を
 
 1. `package.json` の `version` と `src-tauri/tauri.conf.json` の `version` を上げる
 2. `docs/index.html` 内のダウンロードリンク・バージョン表記を更新
-3. `git tag vX.Y.Z && git push origin vX.Y.Z`
-   → GitHub Actions が mac/Windows/Linux をビルドし、GitHub Release にアップロード
-4. Release の内容（ドラフト）を確認してから公開する
+3. 変更内容を確認（typecheck/lint、動作確認）— タグを push すると即公開されるため、
+   **タグを push する前に**確認を終えておく
+4. `git tag vX.Y.Z && git push origin vX.Y.Z`
+   → GitHub Actions が mac/Windows/Linux をビルドし、`.github/workflows/build.yml` の
+   `releaseDraft: false` 設定により **ドラフトを経由せず GitHub Release として即公開**される
 
 ビルドは**未署名**（有効な Apple 証明書なし）。macOS は右クリック→「開く」、
 Windows は SmartScreen の「詳細情報」→「実行」が必要。
